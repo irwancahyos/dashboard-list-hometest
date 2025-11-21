@@ -1,10 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Inventory Management App
+
+This project is a **Next.js** application featuring an **Inventory Management System** with full **CRUD capabilities** (Create, Read, Update, Delete). It provides a clean and efficient interface for managing product data including name, price, stock, and updated timestamps.
+
+## Deploy in Vercel
+Open [Product Management](https://product-management-chi-sable.vercel.app/) with your browser to see the result.
+
 
 ## Getting Started
 
-First, run the development server:
+Clone the project and install dependencies:
 
 ```bash
+git clone https://(see in the repo)
+cd your-repo
+npm install
+
 npm run dev
 # or
 yarn dev
@@ -12,25 +22,48 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- CRUD inventory management
+- Three main pages:
+  - Product List (table view)
+  - Create Product (form)
+  - Edit Product (form)
+- Table enhancements:
+  - Client-side pagination
+  - Sorting (Product Name, Updated Date, Price)
+  - Filtering
+- Form:
+  - Form validation
+  - Error handling using React Hook Form
+- Global state using Zustand
+- UI components using Shadcn UI
+- Toast notifications and popup alerts
+- Responsive layout
+- 404 Not Found page
+- Utility tools: `uuid v4`, `react-hook-form`, `lucide-react` for icons
+- Prepare section to showcase application images/screenshots *(to be added)*
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+| Category | Tools |
+|----------|--------|
+| Framework | Next.js 14 |
+| State Management | Zustand |
+| Form Handling | React Hook Form |
+| UI Components | Shadcn UI |
+| Icons | Lucide Icons |
+| UUID | uuid v4 |
+| Deployment | Vercel |
 
-To learn more about Next.js, take a look at the following resources:
+## Some Image of Platform
+<img width="1393" height="699" alt="image" src="https://github.com/user-attachments/assets/92e06e8c-844e-44ce-888f-2ed6858dc3db" />
+<img width="1401" height="712" alt="image" src="https://github.com/user-attachments/assets/c8c0cc3a-0ae3-4c9c-8986-d9c2f2651599" />
+<img width="1403" height="568" alt="image" src="https://github.com/user-attachments/assets/40e65175-0aa4-45ee-9112-155f12eb9535" />
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
