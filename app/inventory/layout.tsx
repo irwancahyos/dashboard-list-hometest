@@ -28,7 +28,7 @@ export default function InventoryLayout({ children }: { children: ReactNode }) {
     'rounded-full flex font-bold text-[0.813rem] gap-0.5 items-center justify-center duration-300 shadow-none md:bg-(--orange-color) md:hover:bg-(--orange-color)/90 cursor-pointer md:shadow-lg text-(--text-primary-color) min-h-[40px] md:px-[1.25rem]';
 
   return (
-    <div className="flex p-[1.5rem] bg-(--primary-color) min-h-screen gap-5">
+    <div className="flex p-[1.5rem] bg-(--primary-color) h-screen gap-5">
       <div className="hidden lg:block max-w-56 w-full space-y-4">
         <LogoComponent />
         <Sidebar />
