@@ -1,0 +1,53 @@
+{
+  "page": 1,
+  "pageSize": 10,
+  "totalItems": 5,
+  "totalPages": 1,
+  "data": [
+    {
+      "id": "m5gr84i9",
+      "image": "https://picsum.photos/200?random=1",
+      "name": "Papan tulis",
+      "code": "PT-01",
+      "stock": 25,
+      "price": "5000",
+      "updatedAt": "21 Nov 2025, 11.24"
+    },
+    {
+      "id": "3u1reuv4",
+      "image": "https://picsum.photos/200?random=1",
+      "name": "Papan",
+      "code": "PB-02",
+      "stock": 11,
+      "price": "5000",
+      "updatedAt": "21 Nov 2025, 11.24"
+    },
+    {
+      "id": "derv1ws0",
+      "image": "https://picsum.photos/200?random=1",
+      "name": "Sepatu",
+      "code": "SP-03",
+      "stock": 7,
+      "price": "5000",
+      "updatedAt": "21 Nov 2025, 11.24"
+    },
+    {
+      "id": "5kma53ae",
+      "image": "https://picsum.photos/200?random=1",
+      "name": "Meja",
+      "code": "MJ-04",
+      "stock": 99,
+      "price": "5000",
+      "updatedAt": "21 Nov 2025, 11.24"
+    },
+    {
+      "id": "bhqecj4p",
+      "image": "https://picsum.photos/200?random=1",
+      "name": "Baju bekas",
+      "code": "SM-05",
+      "stock": 3,
+      "price": "5000",
+      "updatedAt": "21 Nov 2025, 11.24"
+    }
+  ]
+}

@@ -1,11 +1,16 @@
-import Image from "next/image";
+'use client'
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const route = useRouter();
+  
+  useEffect(() => {
+    route.push('/inventory');
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-(--primary-color)">
-      <div className="p-9 rounded-full shadow-xl bg-(--secondary-color)">
-        <h1 className="text-(--text-primary)">First set up application</h1>
-      </div>
-    </div>
+    <div className="flex min-h-screen items-center justify-center bg-(--primary-color)" />
   );
 }
