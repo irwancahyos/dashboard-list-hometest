@@ -53,11 +53,67 @@ bun dev
 |----------|--------|
 | Framework | Next.js 14 |
 | State Management | Zustand |
+| Unit Testing | Jest |
+| E2E Testing | Playwright |
 | Form Handling | React Hook Form |
+| Animation | React Motion |
 | UI Components | Shadcn UI |
 | Icons | Lucide Icons |
 | UUID | uuid v4 |
 | Deployment | Vercel |
+
+## Jest Testing
+- Available for utils code excludes cslx, cn othr not from me
+- Folder file in the **/app/lib/__test__**
+- Run with `npm test`
+
+## E2E Testing
+
+* You can also test UI flow for 3 application
+* Go to page, Create new product and Edit product
+* All code already in the **/app/test**
+
+```bash
+make sure you run project in the 2 terminal
+```
+
+### Commands
+
+#### Run tests with UI mode
+
+```bash
+npx playwright test --headed
+```
+
+You can also run tests directly inside VSCode with the Playwright extension.
+
+### Test Report Location
+
+After finish the report in that folder:
+
+```
+/playwright-report
+```
+
+To open directly report:
+
+```bash
+npx playwright show-report
+```
+
+```bash
+# Install deps
+npm install
+
+# Run dev server
+npm run dev
+
+# Run E2E tests
+npx playwright test
+
+# View report
+npx playwright show-report
+```
 
 ## Some Image of Platform
 <img width="1393" height="699" alt="image" src="https://github.com/user-attachments/assets/92e06e8c-844e-44ce-888f-2ed6858dc3db" />
