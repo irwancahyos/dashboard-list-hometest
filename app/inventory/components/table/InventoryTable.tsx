@@ -350,38 +350,36 @@ const InventoryTable = () => {
       </div>
 
       <div className="flex flex-col flex-1 min-h-0">
-        <div className="overflow-hidden flex-1 min-h-0">
-          {/* Table Wrapper Component */}
-          <div className="rounded-md h-full flex flex-col min-h-0">
+        {/* Horizontal sync scroll */}
+        <div className="overflow-x-auto flex-1 min-h-0">
+          <div className="min-w-max flex flex-col h-full">
             {/* Header (fixed) */}
             <FadeUp delay={0.3}>
-              <div className="overflow-x-auto">
-                <Table className="text-(--text-primary-color)">
-                  <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id} className="border-b-[.004rem] border-white/30 hover:bg-transparent">
-                        {headerGroup.headers.map((header) => (
-                          <TableHead
-                            key={header.id}
-                            className={cn(`text-(--text-primary-color) h-[60px]`, `${header?.column?.columnDef?.meta?.className}`)}
-                          >
-                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableHeader>
-                </Table>
-              </div>
+              <Table className="text-(--text-primary-color)">
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id} className="border-b-[.004rem] border-white/30 hover:bg-transparent">
+                      {headerGroup.headers.map((header) => (
+                        <TableHead
+                          key={header.id}
+                          className={cn(`text-(--text-primary-color) h-[60px]`, `${header?.column?.columnDef?.meta?.className}`)}
+                        >
+                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+              </Table>
             </FadeUp>
 
             {/* Scrollable Body */}
-            <FadeUp delay={0.3}>
-              <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
+            <div className="overflow-y-auto flex-1 min-h-0">
+              <FadeUp delay={0.3}>
                 <Table className="text-(--text-primary-color)">
                   <TableBody>
-                    {table?.getRowModel()?.rows?.length ? (
-                      table?.getRowModel()?.rows.map((row) => (
+                    {table.getRowModel().rows.length ? (
+                      table.getRowModel().rows.map((row) => (
                         <TableRow
                           className={cn('border-none hover:bg-transparent font-light h-[60px]')}
                           key={row.id}
@@ -396,15 +394,15 @@ const InventoryTable = () => {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={columns?.length} className="h-24 text-center">
+                        <TableCell colSpan={columns.length} className="h-24 text-center">
                           Data yang anda cari tidak ada
                         </TableCell>
                       </TableRow>
                     )}
                   </TableBody>
                 </Table>
-              </div>
-            </FadeUp>
+              </FadeUp>
+            </div>
           </div>
         </div>
 
