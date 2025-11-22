@@ -16,8 +16,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import dynamic from 'next/dynamic';
 
-import ConfirmationDialog from '@/app/components/dialog/ConfirmationDialog';
 import InputText from '@/app/components/input/InputText';
 
 import { useInventoryStore } from '@/app/stores/inventoryStore';
@@ -32,6 +32,10 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+import FadeUp from '../../styles/animation/FadeUp';
+import Underline from '../../styles/animation/Underline';
+import TooltipComponent from '@/app/components/tooltip/Tooltip';
 
 // ********** Local Interface **********
 type Inventory = {
@@ -51,11 +55,20 @@ declare module '@tanstack/react-table' {
   }
 }
 
+const ConfirmationDialogClient = dynamic(() => import('@/app/components/dialog/ConfirmationDialog'), {
+  ssr: false,
+  loading: () => (
+    <button className="cursor-pointer">
+      <Trash size={14} className="text-red-500" />
+    </button>
+  ),
+});
+
 /**
- * This function is to struycture data coluym to render in the table 
+ * This function is to struycture data coluym to render in the table
  * Reason separate is make the code is not to crowded within component
  * @param handleDelete - Use for delete product event
- * @param handleUpdateStock - Use for update stock per product event 
+ * @param handleUpdateStock - Use for update stock per product event
  */
 const getColumns = (
   handleDelete: (id: string) => void,
@@ -65,7 +78,7 @@ const getColumns = (
     accessorKey: 'name',
     header: ({ column }) => (
       <button onClick={() => column.toggleSorting()} className="flex items-center gap-1 cursor-pointer">
-        <span>Nama barang</span>
+        <Underline>Nama barang</Underline>
         <span>{column.getIsSorted() === 'asc' ? <MoveUp size={10} /> : column.getIsSorted() === 'desc' ? <MoveDown size={10} /> : ''}</span>
       </button>
     ),
@@ -83,8 +96,12 @@ const getColumns = (
   },
   {
     accessorKey: 'code',
-    header: 'Kode',
-    cell: ({ row }) => <div className="lowercase">{row.getValue('code')}</div>,
+    header: () => <Underline>Kode</Underline>,
+    cell: ({ row }) => (
+      <div className="lowercase">
+        <Underline>{row.getValue('code')}</Underline>
+      </div>
+    ),
     meta: {
       className: 'w-[15%] text-center',
     },
@@ -94,7 +111,7 @@ const getColumns = (
     header: ({ column }) => {
       return (
         <button className="flex gap-1 items-center justify-center m-auto cursor-pointer" onClick={() => column.toggleSorting()}>
-          <span>Harga</span>
+          <Underline>Harga</Underline>
           <span>
             {column.getIsSorted() === 'asc' ? <MoveUp size={10} /> : column.getIsSorted() === 'desc' ? <MoveDown size={10} /> : ''}
           </span>
@@ -108,7 +125,11 @@ const getColumns = (
   },
   {
     accessorKey: 'stock',
-    header: () => <div>Stok</div>,
+    header: () => (
+      <div>
+        <Underline>Stok</Underline>
+      </div>
+    ),
     cell: ({ row }) => {
       return <div>{row?.getValue('stock')}</div>;
     },
@@ -120,7 +141,7 @@ const getColumns = (
     accessorKey: 'updatedAt',
     header: ({ column }) => (
       <button className="flex gap-1 items-center justify-center m-auto cursor-pointer" onClick={() => column.toggleSorting()}>
-        <span>Tanggal</span>
+        <Underline>Tanggal</Underline>
         <span>{column.getIsSorted() === 'asc' ? <MoveUp size={10} /> : column.getIsSorted() === 'desc' ? <MoveDown size={10} /> : ''}</span>
       </button>
     ),
@@ -133,47 +154,56 @@ const getColumns = (
   },
   {
     id: 'actions',
-    header: 'Action',
+    header: () => (
+      <div>
+        <Underline>Action</Underline>
+      </div>
+    ),
     enableHiding: false,
     cell: ({ row }) => {
       const inventory = row?.original;
-      
+
       return (
         <div className="flex gap-2.5 items-center justify-center">
           {/* reduce stock */}
-          <button
-            onClick={() => handleUpdateStock(inventory?.id, -1, inventory?.name)}
-            disabled={inventory?.stock <= 0}
-            className="cursor-pointer hover:opacity-85"
-          >
-            <Minus size={14} />
-          </button>
+          <TooltipComponent text="Kurangi stok">
+            <button
+              onClick={() => handleUpdateStock(inventory?.id, -1, inventory?.name)}
+              disabled={inventory?.stock <= 0}
+              className="cursor-pointer hover:opacity-85"
+            >
+              <Minus size={14} />
+            </button>
+          </TooltipComponent>
 
           {/* Edit product */}
-          <Link href={`/inventory/${row?.original?.id}/edit`} className="cursor-pointer">
-            <Pencil size={14} className="text-(--orange-color)" />
-          </Link>
+          <TooltipComponent text="Edit barang">
+            <Link href={`/inventory/${row?.original?.id}/edit`} className="cursor-pointer">
+              <Pencil size={14} className="text-(--orange-color)" />
+            </Link>
+          </TooltipComponent>
 
           {/* Delete product */}
-          <ConfirmationDialog
+          <ConfirmationDialogClient
             title="Hapus Produk"
             description={`Apakah Anda yakin ingin menghapus produk ${row?.original?.name}?`}
             onConfirm={() => handleDelete(row?.original?.id)}
             confirmText="Ya, Hapus"
             trigger={
-              <button className="cursor-pointer">
-                <Trash size={14} className="text-red-500" />
-              </button>
+              <TooltipComponent text="Hapus barang">
+                <button className="cursor-pointer">
+                  <Trash size={14} className="text-red-500" />
+                </button>
+              </TooltipComponent>
             }
           />
 
           {/* Increase stock */}
-          <button
-            onClick={() => handleUpdateStock(inventory?.id, 1, inventory?.name)}
-            className="cursor-pointer hover:opacity-85"
-          >
-            <Plus size={14} />
-          </button>
+          <TooltipComponent text="Tambah stok">
+            <button onClick={() => handleUpdateStock(inventory?.id, 1, inventory?.name)} className="cursor-pointer hover:opacity-85">
+              <Plus size={14} />
+            </button>
+          </TooltipComponent>
         </div>
       );
     },
@@ -204,11 +234,11 @@ const InventoryTable = () => {
     const newSorting = typeof updater === 'function' ? updater(sorting) : updater;
 
     if (newSorting.length > 1) {
-      setSorting([newSorting[newSorting.length - 1]]); 
+      setSorting([newSorting[newSorting.length - 1]]);
     } else {
       setSorting(newSorting);
     }
-  }
+  };
 
   const handleDelete = (id: string) => {
     deleteInventoryData(id);
@@ -253,14 +283,14 @@ const InventoryTable = () => {
     const pages = [];
     let startPage, endPage;
     const range = 1;
-    
+
     startPage = Math.max(2, currentPage - range);
     endPage = Math.min(pageCount - 1, currentPage + range);
 
-    if (currentPage <= range + 1) { 
-      endPage = maxPagesToShow - 2; 
-    } else if (currentPage >= pageCount - range) { 
-      startPage = pageCount - (maxPagesToShow - 3); 
+    if (currentPage <= range + 1) {
+      endPage = maxPagesToShow - 2;
+    } else if (currentPage >= pageCount - range) {
+      startPage = pageCount - (maxPagesToShow - 3);
     }
 
     // First page
@@ -280,37 +310,42 @@ const InventoryTable = () => {
     if (endPage < pageCount - 1) {
       pages.push('...');
     }
-    
+
     // Last number
     if (pageCount > 1) {
       pages.push(pageCount);
     }
-    
+
     // No duplicate
     return [...new Set(pages)];
   };
-  
+
   const pageNumber = getPageNumbers();
 
   return (
     <div className="w-full bg-(--primary-color) p-[14px] rounded-md flex flex-col h-[100%]">
       <div className="h-fit">
         {/* Title Page */}
+
         <div className="py-2">
-          <p className="text-(--text-primary-color) text-[0.875rem] font-bold flex items-center gap-2">
-            <span>Produk</span>
-          </p>
+          <FadeUp delay={0.3}>
+            <p className="text-(--text-primary-color) text-[0.875rem] font-bold flex items-center gap-2">
+              <span>Produk</span>
+            </p>
+          </FadeUp>
         </div>
 
         {/* Search Input  */}
         <div className="py-2">
-          <InputText
-            suffix={<Search size={12} />}
-            value={searchName ?? ''}
-            onChange={(e) => table?.setGlobalFilter(e)}
-            placeholder="Cari barang"
-            className={`text-(--text-primary-color)/70 focus-within:text-(--text-primary-color) rounded-2xl border-[#101625] bg-(--primary-color) duration-300 focus-within:shadow-lg w-full sm:max-w-[60%] md:max-w-[40%]`}
-          />
+          <FadeUp delay={0.3}>
+            <InputText
+              suffix={<Search size={12} />}
+              value={searchName ?? ''}
+              onChange={(e) => table?.setGlobalFilter(e)}
+              placeholder="Cari barang"
+              className={`text-(--text-primary-color)/70 focus-within:text-(--text-primary-color) rounded-2xl border-[#101625] bg-(--primary-color) duration-300 focus-within:shadow-lg w-full sm:max-w-[60%] md:max-w-[40%]`}
+            />
+          </FadeUp>
         </div>
       </div>
 
@@ -319,119 +354,125 @@ const InventoryTable = () => {
           {/* Table Wrapper Component */}
           <div className="rounded-md h-full flex flex-col min-h-0">
             {/* Header (fixed) */}
-            <div className="overflow-x-auto">
-              <Table className="text-(--text-primary-color)">
-                <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id} className="border-b-[.004rem] border-white/30 hover:bg-transparent">
-                      {headerGroup.headers.map((header) => (
-                        <TableHead
-                          key={header.id}
-                          className={cn(`text-(--text-primary-color) h-[60px]`, `${header?.column?.columnDef?.meta?.className}`)}
-                        >
-                          {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableHeader>
-              </Table>
-            </div>
-
-            {/* Scrollable Body */}
-            <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
-              <Table className="text-(--text-primary-color)">
-                <TableBody>
-                  {table?.getRowModel()?.rows?.length ? (
-                    table?.getRowModel()?.rows.map((row) => (
-                      <TableRow
-                        className={cn('border-none hover:bg-transparent font-light h-[60px]')}
-                        key={row.id}
-                        data-state={row.getIsSelected() && 'selected'}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell className={`${cell?.column?.columnDef?.meta?.className}`} key={cell.id}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
+            <FadeUp delay={0.3}>
+              <div className="overflow-x-auto">
+                <Table className="text-(--text-primary-color)">
+                  <TableHeader>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id} className="border-b-[.004rem] border-white/30 hover:bg-transparent">
+                        {headerGroup.headers.map((header) => (
+                          <TableHead
+                            key={header.id}
+                            className={cn(`text-(--text-primary-color) h-[60px]`, `${header?.column?.columnDef?.meta?.className}`)}
+                          >
+                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                          </TableHead>
                         ))}
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={columns?.length} className="h-24 text-center">
-                        Data yang anda cari tidak ada
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                    ))}
+                  </TableHeader>
+                </Table>
+              </div>
+            </FadeUp>
+
+            {/* Scrollable Body */}
+            <FadeUp delay={0.3}>
+              <div className="overflow-x-auto overflow-y-auto flex-1 min-h-0">
+                <Table className="text-(--text-primary-color)">
+                  <TableBody>
+                    {table?.getRowModel()?.rows?.length ? (
+                      table?.getRowModel()?.rows.map((row) => (
+                        <TableRow
+                          className={cn('border-none hover:bg-transparent font-light h-[60px]')}
+                          key={row.id}
+                          data-state={row.getIsSelected() && 'selected'}
+                        >
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell className={`${cell?.column?.columnDef?.meta?.className}`} key={cell.id}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={columns?.length} className="h-24 text-center">
+                          Data yang anda cari tidak ada
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </FadeUp>
           </div>
         </div>
 
         {/* Pagination Container */}
         <div className="flex items-center space-x-2 py-2 justify-end">
           {/* Pagination Component */}
-          <Pagination className={cn('flex justify-end w-auto mx-0 ', table?.getRowModel()?.rows?.length ? 'visible' : 'invisible')}>
-            <PaginationContent className="text-(--text-primary-color)">
-              {/* Pagination Previous */}
-              <PaginationItem>
-                <PaginationPrevious
-                  className={cn(
-                    'cursor-pointer hover:bg-transparent hover:text-white/80 text-[0.75rem]!',
-                    !table.getCanPreviousPage() && 'opacity-50 pointer-events-none',
-                  )}
-                  onClick={() => table.previousPage()}
-                  href="#"
-                />
-              </PaginationItem>
+          <FadeUp delay={0.3}>
+            <Pagination className={cn('flex justify-end w-auto mx-0 ', table?.getRowModel()?.rows?.length ? 'visible' : 'invisible')}>
+              <PaginationContent className="text-(--text-primary-color)">
+                {/* Pagination Previous */}
+                <PaginationItem>
+                  <PaginationPrevious
+                    className={cn(
+                      'cursor-pointer hover:bg-transparent hover:text-white/80 text-[0.75rem]!',
+                      !table.getCanPreviousPage() && 'opacity-50 pointer-events-none',
+                    )}
+                    onClick={() => table.previousPage()}
+                    href="#"
+                  />
+                </PaginationItem>
 
-              {/* Pagination Number */}
-              {pageNumber.map((pageNumber, index) => {
-                const isEllipsis = pageNumber === '...';
-                const pageIndex = isEllipsis ? -1 : (pageNumber as number) - 1;
+                {/* Pagination Number */}
+                {pageNumber.map((pageNumber, index) => {
+                  const isEllipsis = pageNumber === '...';
+                  const pageIndex = isEllipsis ? -1 : (pageNumber as number) - 1;
 
-                if (isEllipsis) {
+                  if (isEllipsis) {
+                    return (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <span className="px-2 py-1 text-(--text-primary-color)/70">...</span>
+                      </PaginationItem>
+                    );
+                  }
+
+                  // Tampilkan Link Halaman
                   return (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <span className="px-2 py-1 text-(--text-primary-color)/70">...</span>
+                    <PaginationItem key={pageIndex}>
+                      <PaginationLink
+                        href="#"
+                        onClick={() => table.setPageIndex(pageIndex)}
+                        isActive={table.getState().pagination.pageIndex === pageIndex}
+                        className={cn(
+                          'bg-transparent border-none hover:bg-transparent hover:text-(--text-primary-color)/80',
+                          table.getState().pagination.pageIndex === pageIndex
+                            ? 'text-(--text-primary-color)'
+                            : 'text-(--text-primary-color)/40',
+                        )}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
                     </PaginationItem>
                   );
-                }
+                })}
 
-                // Tampilkan Link Halaman
-                return (
-                  <PaginationItem key={pageIndex}>
-                    <PaginationLink
-                      href="#"
-                      onClick={() => table.setPageIndex(pageIndex)}
-                      isActive={table.getState().pagination.pageIndex === pageIndex}
-                      className={cn(
-                        'bg-transparent border-none hover:bg-transparent hover:text-(--text-primary-color)/80',
-                        table.getState().pagination.pageIndex === pageIndex
-                          ? 'text-(--text-primary-color)'
-                          : 'text-(--text-primary-color)/40',
-                      )}
-                    >
-                      {pageNumber}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              })}
-
-              {/* Pagination Next */}
-              <PaginationItem>
-                <PaginationNext
-                  className={cn(
-                    'cursor-pointer hover:bg-transparent hover:text-white/80 text-[0.75rem]!',
-                    !table.getCanNextPage() && 'opacity-50 pointer-events-none',
-                  )}
-                  onClick={() => table.nextPage()}
-                  href="#"
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+                {/* Pagination Next */}
+                <PaginationItem>
+                  <PaginationNext
+                    className={cn(
+                      'cursor-pointer hover:bg-transparent hover:text-white/80 text-[0.75rem]!',
+                      !table.getCanNextPage() && 'opacity-50 pointer-events-none',
+                    )}
+                    onClick={() => table.nextPage()}
+                    href="#"
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </FadeUp>
         </div>
       </div>
       <Toaster position="bottom-right" />

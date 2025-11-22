@@ -1,14 +1,18 @@
 'use client';
 
 import { ReactNode } from 'react';
-import Sidebar from '../components/sidebar/Sidebar';
 import Image from 'next/image';
-import mainImage from '@/asset/images/main-logo-platform.png';
-import { ChevronLeft, Plus } from 'lucide-react';
-import imageCloud from '@/asset/images/image-cloud.jpg';
-import { usePathname, useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { ChevronLeft, Plus } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+
+import mainImage from '@/asset/images/main-logo-platform.png';
+import imageCloud from '@/asset/images/image-cloud.jpg';
+import { cn } from '@/lib/utils';
+
+import Sidebar from '../components/sidebar/Sidebar';
+import FadeRight from './styles/animation/FadeRight';
+import FadeLeft from './styles/animation/FadeLeft';
 
 export default function InventoryLayout({ children }: { children: ReactNode }) {
   const route = useRouter();
@@ -28,30 +32,38 @@ export default function InventoryLayout({ children }: { children: ReactNode }) {
     'rounded-full flex font-bold text-[0.813rem] gap-0.5 items-center justify-center duration-300 shadow-none md:bg-(--orange-color) md:hover:bg-(--orange-color)/90 cursor-pointer md:shadow-lg text-(--text-primary-color) min-h-[40px] md:px-[1.25rem]';
 
   return (
-    <div className="flex p-[1.5rem] bg-(--primary-color) h-screen gap-5">
+    <div className="flex p-[1.5rem] bg-(--primary-color) h-screen gap-5 overflow-hidden">
       <div className="hidden lg:block max-w-56 w-full space-y-4">
-        <LogoComponent />
+        <FadeLeft delay={0.3}>
+          <LogoComponent />
+        </FadeLeft>
         <Sidebar />
       </div>
       <div className="flex flex-col flex-1 w-full space-y-4">
         <div className="flex justify-between">
           <div className="block lg:hidden">
-            <LogoComponent />
+            <FadeLeft delay={0.3}>
+              <LogoComponent />
+            </FadeLeft>
           </div>
+
           <div className={cn('bottom-5 right-10 md:bottom-auto md:right-auto lg:w-full pt-0 h-fit min-h-10 flex justify-end')}>
-            {isDashboardPage ? (
-              <button onClick={() => route.push('inventory/create')} className={cn(buttonAboveTableClasses)}>
-                <Plus className="size-5 md:size-4 mr-2 md:mr-0" strokeWidth={3} />
-                <span className="hidden md:block">Tambah</span>
-              </button>
-            ) : (
-              <button onClick={() => route.push('/inventory')} className={cn(buttonAboveTableClasses)}>
-                <ChevronLeft className="size-5 md:size-4 mr-2 md:mr-0" strokeWidth={3} />
-                <span className="hidden md:block">Back</span>
-              </button>
-            )}
+            <FadeRight delay={0.3}>
+              {isDashboardPage ? (
+                <button onClick={() => route.push('inventory/create')} className={cn(buttonAboveTableClasses)}>
+                  <Plus className="size-5 md:size-4 mr-2 md:mr-0" strokeWidth={3} />
+                  <span className="hidden md:block">Tambah</span>
+                </button>
+              ) : (
+                <button onClick={() => route.push('/inventory')} className={cn(buttonAboveTableClasses)}>
+                  <ChevronLeft className="size-5 md:size-4 mr-2 md:mr-0" strokeWidth={3} />
+                  <span className="hidden md:block">Back</span>
+                </button>
+              )}
+            </FadeRight>
           </div>
         </div>
+
         <main
           style={{ backgroundImage: `url(${imageCloud?.src})` }}
           className="flex flex-col flex-1 p-4 h-full rounded-[0.875rem] shadow-xl relative overflow-hidden bg-cover overflow-x-auto"
