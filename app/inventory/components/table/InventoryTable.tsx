@@ -190,11 +190,13 @@ const getColumns = (
             onConfirm={() => handleDelete(row?.original?.id)}
             confirmText="Ya, Hapus"
             trigger={
-              <TooltipComponent text="Hapus barang">
-                <button className="cursor-pointer">
-                  <Trash size={14} className="text-red-500" />
-                </button>
-              </TooltipComponent>
+              <span>
+                <TooltipComponent text="Hapus barang">
+                  <button className="cursor-pointer">
+                    <Trash size={14} className="text-red-500" />
+                  </button>
+                </TooltipComponent>
+              </span>
             }
           />
 
@@ -241,6 +243,7 @@ const InventoryTable = () => {
   };
 
   const handleDelete = (id: string) => {
+    console.log('masuk sini');
     deleteInventoryData(id);
     toast.success('Produk berhasil dihapus');
   };
